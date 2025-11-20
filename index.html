@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />  
+<meta charset="UTF-8" />
 <title>PDF Viewer</title>
 <style>
     body {
@@ -9,7 +9,6 @@
         font-family: Arial, sans-serif;
         background: #f2f2f2;
     }
-
     .container {
         max-width: 900px;
         margin: 40px auto;
@@ -18,12 +17,10 @@
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0,0,0,0.15);
     }
-
     h1 {
         text-align: center;
         margin-bottom: 20px;
     }
-
     .file-list a {
         display: block;
         padding: 10px;
@@ -33,13 +30,10 @@
         border-radius: 5px;
         text-decoration: none;
         border: 1px solid #ccc;
-        transition: background 0.2s;
     }
-
     .file-list a:hover {
         background: #dcdcdc;
     }
-
     #viewer {
         margin-top: 20px;
         width: 100%;
@@ -47,12 +41,9 @@
         border: 1px solid #ccc;
         border-radius: 6px;
         background: #000;
-    }
-
-    .no-pdf {
+        color: white;
         text-align: center;
-        color: #444;
-        padding-top: 50px;
+        padding-top: 30px;
     }
 </style>
 </head>
@@ -60,49 +51,55 @@
 
 <div class="container">
     <h1>PDF Viewer</h1>
-
     <div class="file-list" id="fileList"></div>
-
-    <div id="viewer">
-        <div class="no-pdf">Select a PDF from the list above</div>
-    </div>
+    <div id="viewer">Select a PDF from the list above</div>
 </div>
 
 <script>
-// --------------------------------------------------
-// LIST YOUR PDF FILES HERE (relative to this page)
-// --------------------------------------------------
-const pdfFiles = [
+// OLD iPad COMPATIBLE JAVASCRIPT
+
+// ---------------------------
+// List of your PDFs
+// ---------------------------
+var pdfFiles = [
     "physics.pdf",
     "chemistry.pdf",
     "compfundnotes1.pdf",
     "english.pdf"
 ];
-// --------------------------------------------------
+// ---------------------------
 
-const listContainer = document.getElementById("fileList");
-const viewer = document.getElementById("viewer");
+// Build list when page loads
+window.onload = function () {
+    var listContainer = document.getElementById("fileList");
+    var viewer = document.getElementById("viewer");
 
-// Build clickable list
-pdfFiles.forEach(file => {
-    const link = document.createElement("a");
-    link.href = "#";
-    link.textContent = file;
-    link.onclick = function () {
-        openPDF(file);
-        return false;
-    };
-    listContainer.appendChild(link);
-});
+    for (var i = 0; i < pdfFiles.length; i++) {
+        var file = pdfFiles[i];
+        var link = document.createElement("a");
+        link.href = "#";
+        link.innerHTML = file;
 
-// Open PDF inside viewer box
+        link.onclick = (function (fileName) {
+            return function () {
+                openPDF(fileName);
+                return false;
+            };
+        })(file);
+
+        listContainer.appendChild(link);
+    }
+};
+
 function openPDF(file) {
-    viewer.innerHTML = `
-        <embed src="${file}" type="application/pdf" width="100%" height="100%">
-        <p style="color:white; text-align:center; padding:20px;">
-            Your browser cannot display PDF inline. 
-            <br><a href="${file}" style="color:yellow;">Click here to download the PDF</a>.
-        </p>`;
+    var viewer = document.getElementById("viewer");
+
+    // Old Safari DOES NOT support template strings
+    viewer.innerHTML =
+        '<embed src="' + file + '" type="application/pdf" width="100%" height="100%">' +
+        '<p style="color:white; padding-top:20px;">' +
+        'If the PDF does not load, <a href="' + file + '" style="color:yellow;">tap here to download</a>.' +
+        '</p>';
 }
 </script>
 
